@@ -9,3 +9,6 @@ class CallList(APIView):
 
     def post(self, request, format=None):
         return Response(status=status.HTTP_201_CREATED)
+
+    def put(self, request, format=None):
+        return Response(status=status.HTTP_200_OK)

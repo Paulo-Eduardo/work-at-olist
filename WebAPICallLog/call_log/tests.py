@@ -1,9 +1,10 @@
 from django.test import TestCase
+from call_log.models import Call
 
 # Create your tests here.
 class CallLogTests(TestCase):
 
-    def test_post_call_start(self):
+    def test_can_post_call_start(self):
         data = { 
                     "id":  1, 
                     "type":  "S", 
@@ -14,6 +15,7 @@ class CallLogTests(TestCase):
                 }
         response = self.client.post('/calls/', data)
         self.assertEqual(response.status_code, 201)
+        self.assertEqual(Call.objects.count(), 1)
 
     def test_post_call_end(self):
         data = {
@@ -22,5 +24,7 @@ class CallLogTests(TestCase):
                     "timestamp":  "",
                     "call_id":  1,
                 }
-        response = self.client.post('/calls/', data)
-        self.assertEqual(response.status_code, 201)        
+        response = self.client.put('/calls/', data)
+        self.assertEqual(response.status_code, 200)
+
+    
