@@ -22,5 +22,5 @@ class CallLogTests(TestCase):
                     "timestamp":  "",
                     "call_id":  1,
                 }
-        response = self.client.post('/call/', data)
+        response = self.client.post('/calls/', data)
         self.assertEqual(response.status_code, 201)        
