@@ -1,6 +1,7 @@
 from django.test import TestCase, RequestFactory
 from call_log.models import Call, CallRecord
 from datetime import datetime, time
+from decimal import Decimal
 
 # Create your tests here.
 class CallLogTests(TestCase):
@@ -44,5 +45,6 @@ class CallLogTests(TestCase):
 
         cr = CallRecord.objects.all()[0]
         assert cr.id, 1
-        assert cr.end_time, data["timestamp"]
-        self.assertEqual(cr.duration, time(0,2,0))    
+       # assert cr.end_time, data["timestamp"]
+        self.assertEqual(cr.duration, time(0,2,0))
+        self.assertEqual(cr.price, Decimal('0.36'))

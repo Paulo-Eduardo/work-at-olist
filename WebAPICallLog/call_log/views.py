@@ -5,6 +5,7 @@ from rest_framework import status
 from call_log.serializers import CallSerializer, CallRecordSerializer
 from call_log.models import CallRecord
 from datetime import datetime, time
+from decimal import Decimal
 
 # Create your views here.
 class CallList(APIView):
@@ -32,15 +33,24 @@ class CallList(APIView):
             return
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)    
 
+    def calc_price(self, start_hour, duration):
+        price = 0.36
+        if start_hour <= 22 and start_hour >= 6:
+            price = price + ((duration.minute - 1) * 0.09)
+
+        return price
+
     def save_data_record_end(self, data):
         call_record = self.get_object(data["call_id"])
         start_date = datetime.strptime(str(call_record.start_time)[:19], "%Y-%m-%d %H:%M:%S")
         end_date = datetime.strptime(data["timestamp"], "%Y-%m-%d %H:%M:%S")
         dif_dates = end_date - start_date
         duration = time(dif_dates.seconds//3600, (dif_dates.seconds//60)%60, dif_dates.seconds%60)        
+        price = self.calc_price(start_date.hour, duration)
         call_record_end = {
             "end_time" : data["timestamp"],
             "duration" : duration,
+            "price": round(price, 2)
         }
 
         serializer = CallRecordSerializer(call_record, call_record_end)
