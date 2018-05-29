@@ -1,5 +1,5 @@
 from django.test import TestCase, RequestFactory
-from call_log.models import Call, CallRecord
+from call_log.models import CallRecord
 from datetime import datetime, time
 from decimal import Decimal
 
@@ -22,9 +22,7 @@ class CallLogTests(TestCase):
                     "destination":  "47 996615673", 
                 }
         response = self.client.post('/calls/', data, format='json')
-        self.assertEqual(response.status_code, 201)      
-        self.assertTrue(Call.objects.count())
-
+        self.assertEqual(response.status_code, 200)      
         cr = CallRecord.objects.all()[0]
         assert cr.id, 1
         assert cr.start_time, data["timestamp"]
@@ -42,9 +40,7 @@ class CallLogTests(TestCase):
                     "call_id":  1,
                 }
         response = self.client.post('/calls/', data)
-        self.assertEqual(response.status_code, 201)
-        self.assertTrue(Call.objects.count())        
-
+        self.assertEqual(response.status_code, 200)
 
         cr = CallRecord.objects.all()[0]
         assert cr.id, 1
@@ -63,8 +59,7 @@ class CallLogTests(TestCase):
                     "call_id":  2,
                 }
         response = self.client.post('/calls/', data)
-        self.assertEqual(response.status_code, 201)
-        self.assertTrue(Call.objects.count())
+        self.assertEqual(response.status_code, 200)
         cr = CallRecord.objects.all()[1]
         self.assertEqual(cr.price, Decimal('0.72'))
 

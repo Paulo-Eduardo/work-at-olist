@@ -1,10 +1,5 @@
 from rest_framework import serializers
-from call_log.models import Call, CallRecord, TYPE
-
-class CallSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Call
-        fields = ('id', 'typeCall', 'timestamp', 'call_id', 'source', 'destination')
+from call_log.models import CallRecord, TYPE
 
 
 class CallRecordSerializer(serializers.ModelSerializer):

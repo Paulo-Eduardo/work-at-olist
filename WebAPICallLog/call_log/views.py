@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from call_log.serializers import CallSerializer, CallRecordSerializer
+from call_log.serializers import CallRecordSerializer
 from call_log.models import CallRecord
 from datetime import datetime, time
 from decimal import Decimal
@@ -33,9 +33,9 @@ class CallList(APIView):
 
         serializer = CallRecordSerializer(data=callRecord)
         if(serializer.is_valid()):
-            serializer.save()
-            return
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)    
+            serializer.save()            
+            return Response(serializer.data, status = status.HTTP_200_OK)   
+        return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)   
 
     def calc_price(self, start_hour, duration):
         price = 0.36
@@ -60,20 +60,14 @@ class CallList(APIView):
         serializer = CallRecordSerializer(call_record, call_record_end)
         if(serializer.is_valid()):
             serializer.save()
-            return
+            return Response(serializer.data, status = status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def post(self, request, format=None):
-        serializer = CallSerializer(data=request.data)
-        if(serializer.is_valid()):
-            if(request.data["typeCall"] == "S"):
-                self.save_data_record_start(request.data)
-            if(request.data["typeCall"] == "E"):
-                self.save_data_record_end(request.data)
-
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        if(request.data["typeCall"] == "S"):
+            return self.save_data_record_start(request.data)
+        if(request.data["typeCall"] == "E"):
+            return self.save_data_record_end(request.data)       
 
 class CallBill(APIView):
     """
