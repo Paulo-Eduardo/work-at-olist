@@ -12,6 +12,10 @@ class CallList(APIView):
     """
     Create and update CallRecords instance
     """
+    def get(self, request):
+        calls = CallRecord.objects.all()
+        serializer = CallRecordSerializer(calls, many=True)
+        return Response(serializer.data)
 
     def get_object(self, pk):
         try:
@@ -36,7 +40,7 @@ class CallList(APIView):
     def calc_price(self, start_hour, duration):
         price = 0.36
         if start_hour <= 22 and start_hour >= 6:
-            price = price + ((duration.minute - 1) * 0.09)
+            price = price + ((duration.hour * 60 + (duration.minute - 1)) * 0.09)
 
         return price
 
@@ -70,3 +74,18 @@ class CallList(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class CallBill(APIView):
+    """
+    Get detail bill
+    """
+    def get(self, request, number, date=None, format=None):
+        if(date == None):
+            calls = CallRecord.objects.filter(source=number, start_time__month=datetime.now().month - 1)
+            serializer = CallRecordSerializer(calls, many=True)
+            return Response(serializer.data)
+        else:
+            date = datetime.strptime(date, "%Y-%m-%d")
+            calls = CallRecord.objects.filter(source=number, start_time__month=date.month)
+            serializer = CallRecordSerializer(calls, many=True)
+            return Response(serializer.data)
