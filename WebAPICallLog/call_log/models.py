@@ -7,7 +7,7 @@ TYPE = (
 )
 
 class CallRecord(models.Model):
-    id = models.AutoField(primary_key = True)
+    id = models.IntegerField(primary_key = True)
     source = models.CharField(max_length=20, blank=True)
     destination = models.CharField(max_length=20, blank=True)
     start_time = models.DateTimeField(default=None, blank=True, null=True)

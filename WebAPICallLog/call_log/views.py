@@ -52,6 +52,7 @@ class CallList(APIView):
         duration = time(dif_dates.seconds//3600, (dif_dates.seconds//60)%60, dif_dates.seconds%60)        
         price = self.calc_price(start_date.hour, duration)
         call_record_end = {
+            "id": data["call_id"],
             "end_time" : data["timestamp"],
             "duration" : duration,
             "price": round(price, 2)

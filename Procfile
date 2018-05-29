@@ -1,0 +1,1 @@
+web: gunicorn WebAPICallLog.wsgi --log-file -
