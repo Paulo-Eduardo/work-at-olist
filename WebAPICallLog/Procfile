@@ -1,1 +1,1 @@
-web: gunicorn WebAPICallLog.WebAPICallLog.wsgi --log-file -
+web: gunicorn WebAPICallLog.wsgi --log-file -
