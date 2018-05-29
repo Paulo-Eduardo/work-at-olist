@@ -9,6 +9,7 @@ class CallLogTests(TestCase):
         # Every test needs access to the request factory.
         self.factory = RequestFactory()
         self.user = CallRecord.objects.create(id=1, start_time="2018-10-10 23:59:00", destination="000", source="000")
+        self.user = CallRecord.objects.create(id=2, start_time="2018-10-10 20:30:00", destination="000", source="000")
 
     def test_can_post_call_start(self):
         data ={ 
@@ -29,6 +30,7 @@ class CallLogTests(TestCase):
         assert cr.source, data["source"]
         assert cr.destination, data["destination"]
 
+
     def test_post_call_end(self):
         
         
@@ -48,3 +50,21 @@ class CallLogTests(TestCase):
        # assert cr.end_time, data["timestamp"]
         self.assertEqual(cr.duration, time(0,2,0))
         self.assertEqual(cr.price, Decimal('0.36'))
+
+
+    def test_post_call_end_day(self):
+        
+        
+        data = {
+                    "id":  2,
+                    "typeCall": "E",
+                    "timestamp":  "2018-10-11 20:35:30",
+                    "call_id":  2,
+                }
+        response = self.client.post('/calls/', data)
+        self.assertEqual(response.status_code, 201)
+        self.assertTrue(Call.objects.count())        
+
+
+        cr = CallRecord.objects.all()[1]
+        self.assertEqual(cr.price, Decimal('0.72'))
